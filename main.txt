@@ -1,0 +1,28 @@
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.model_selection import train_test_split
+from data import book_preprocess
+from sklearn.metrics import accuracy_score
+
+import  pandas as pd
+
+df = pd.read_table('D:/ML/booksdataset/data.txt',
+                   sep='\t',
+                   header=None,
+                   names=['label', 'data'])
+
+df_test = pd.read_table('D:/ML/booksdataset/test_data.txt',
+                   sep='\t',
+                   header=None,
+                   names=['label', 'message'])
+
+#print(df_test)
+feature_data = book_preprocess(df['data'])
+#feature_test = test_preprocess(df_test['message'])
+X_train, X_test, y_train, y_test = train_test_split(feature_data, df['label'], test_size=0.1, random_state=0)
+print(y_test)
+model = MultinomialNB()
+model.fit(X_train, y_train)
+predicted = model.predict(X_test)
+print(accuracy_score(predicted, y_test))
+print(predicted)
+

@@ -1,0 +1,21 @@
+import nltk
+from nltk.stem import PorterStemmer
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfTransformer
+
+
+def book_preprocess(book_data):
+    book_data = book_data.map(lambda x: x.lower())
+    book_data = book_data.str.replace('[^\w\s]', '')
+    book_data = book_data.apply(nltk.word_tokenize)
+    stemmer = PorterStemmer()
+
+    book_data = book_data.apply(lambda x: [stemmer.stem(y) for y in x])
+    book_data = book_data.apply(lambda x: ' '.join(x))
+
+    count_vect = CountVectorizer()
+    counts = count_vect.fit_transform(book_data)
+    transformer = TfidfTransformer().fit(counts)
+    counts = transformer.transform(counts)
+    #print(counts)
+    return counts
